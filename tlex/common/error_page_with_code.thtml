@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+	<title>{$errorName} - tlex</title>
+	<style type="text/css">
+		{% require TLEX_BASE_PATH . '/common/error_page.css' %}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+			<h1>{$errorName}</h1>
+			<h3>{$errorMessage}</h3>
+		</div>
+		<div id="content">
+			<div class="file-name">
+				Error in "{$originTplName}" on line {$errorLineNum}
+			</div>
+
+			<div class="code-wrap clearfix">
+				<ol class="linenum">
+					{% foreach ($errorLines as $i => $line) : %}
+						<li>{% echo $errorLineNum + $i - 4 %}</li>
+					{% endforeach; %}
+				</ol>
+<pre class="code">
+{% foreach ($errorLines as $i => $line) : %}
+{% echo ($i == 4) ? '<strong>'.htmlspecialchars($line).'</strong>' : htmlspecialchars($line) %}
+{% endforeach; %}
+</pre>
+			</div>
+
+			{% if ($cachedTplName) : %}
+			<div class="file-name" style="margin-top:20px">
+				Rendered cache file version ("{$cachedTplName}") :
+			</div>
+			<div class="code-wrap clearfix">
+				<ol class="linenum">
+					{% foreach ($errorLines_cached as $i => $line) : %}
+						<li>{% echo $errorLineNum + $i - 4 %}</li>
+					{% endforeach; %}
+				</ol>
+<pre class="code">
+{% foreach ($errorLines_cached as $i => $line) : %}
+{% echo ($i == 4) ? '<strong>'.htmlspecialchars($line).'</strong>' : htmlspecialchars($line) %}
+{% endforeach; %}
+</pre>
+			</div>
+			{% endif; %}
+		</div>
+		<div id="footer">
+			powered by <a href="http://github.com/Prev/tlex">tlex</a>
+		</div>
+	</div>
+	</body>
+</html>
+<!--
