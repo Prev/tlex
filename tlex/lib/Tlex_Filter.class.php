@@ -1,7 +1,19 @@
 <?php
+	
+	/**
+	 * @package Tlex
+	 * 
+	 *
+	 * Filter.class.php
+	 * - Filter(pipe) like django
+	 */
 
 	class Tlex_Filter {
 		
+		public static function register($function) {
+			var_dump($function);
+		}
+
 		public function add($value, $param) {
 			switch (gettype($value)) {
 				case 'integer':
@@ -53,5 +65,6 @@
 
 			return $value;
 		}
-
 	}
+
+	

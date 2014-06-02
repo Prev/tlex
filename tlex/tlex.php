@@ -53,6 +53,10 @@
 	require TLEX_BASE_PATH . '/lib/Tlex_TemplateHandler.class.php';
 	require TLEX_BASE_PATH . '/lib/Tlex_Filter.class.php';
 	require TLEX_BASE_PATH . '/lib/Tlex_ErrorHandler.class.php';
-	
+
+	require TLEX_BASE_PATH . '/user-extensions/functions.php';
+
 
 	register_shutdown_function(array('Tlex_ErrorHandler', 'parseShutdownHandler'));
+	
+	Tlex::init();

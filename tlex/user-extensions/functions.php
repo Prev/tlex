@@ -1,0 +1,3 @@
+<?php
+	
+	// type global function!

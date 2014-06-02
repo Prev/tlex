@@ -1,0 +1,5 @@
+﻿RewriteEngine On
+
+RewriteRule ^(.+?)\.thtml$ - [L,F]
+RewriteRule ^tlex/(.*?)\.php$ - [L,F]
+RewriteRule ^tlex/cache/(.*?)$ - [L,F]

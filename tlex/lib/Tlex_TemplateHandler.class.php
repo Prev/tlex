@@ -24,7 +24,7 @@
 			$html = preg_replace_callback('/{%([\s\S]+?)%}/', array(self, 'parseCode'), $html);
 
 			// {$foo|filter}
-			$html = preg_replace_callback('/{\s?(\$[^}|]+)((\|[^}|]+)+)\s?}/', array(self, 'parseFilter'), $html);
+			$html = preg_replace_callback('/{\s?(\$?[^}|]+)((\|[^}|]+)+)\s?}/', array(self, 'parseFilter'), $html);
 
 			// {$foo}
 			$html = preg_replace_callback('/{\s?(\$[^}]+?)\s?}/', array(self, 'parseVar'), $html);
@@ -94,7 +94,7 @@
 		}
 
 		static private function getFilterCode($data, $filter, $params=NULL) {
-			if (!method_exists('Tlex_Filter', $filter)) {
+			if (!method_exists('Tlex_Filter', $filter) && !method_exists('Tlex_ExtendedFilter', $filter)) {
 				Tlex_ErrorHandler::throwCompileError(
 					self::$tplName,
 					'filter does not exists',

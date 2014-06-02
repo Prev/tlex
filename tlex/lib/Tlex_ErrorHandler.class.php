@@ -1,14 +1,29 @@
 <?php
 	
+	/**
+	 * @package Tlex
+	 * 
+	 *
+	 * ErrorHandler.class.php
+	 * - Handle shutdown error (parse error in template)
+	 * - throw custom error
+	 */
+
 	class Tlex_ErrorHandler {
 
 		public static function parseShutdownHandler() {
 			$error = error_get_last();
+			
+			if (strpos($error['file'], TLEX_BASE_PATH.DIRECTORY_SEPARATOR.'cache') !== false) {
+				if ($error['type'] == E_PARSE)
+					$errorName = 'Template Parse Error';
+				else if (strpos($error['message'], 'Call to private method') === 0)
+					$errorName = 'Call hidden filter';
+				else
+					return;
 
-			if (strpos($error['file'], TLEX_BASE_PATH.DIRECTORY_SEPARATOR.'cache') !== false && $error['type'] == E_PARSE) {
-				
 				self::renderErrorPageWithCode(
-					'Template Parse Error',
+					$errorName,
 					$error['message'],
 					$error['line'],
 					4,
