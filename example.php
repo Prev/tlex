@@ -2,9 +2,14 @@
 
 	require 'tlex/tlex.php';
 
-	$obj = new StdClass();
-	$obj->foo = 'foooooo';
-	$obj->fruits = array('apple', 'banana', 'lemon');
+	$context = new StdClass();
+	$context->foo = 'foooooo';
+	$context->fruits = array('apple', 'banana', 'lemon');
+	$context->people = json_decode('[
+		{"name": "zed", "age": 19},
+		{"name": "amy", "age": 22},
+		{"name": "joe", "age": 31}
+	]');
 
 	function printLicense($detail=false) {
 		if ($detail)
@@ -21,4 +26,4 @@
 			return 'MIT';
 	}
 
-	Tlex::render('example.thtml', $obj);
+	Tlex::render('example.thtml', $context);

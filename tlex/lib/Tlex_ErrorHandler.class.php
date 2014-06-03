@@ -73,7 +73,7 @@
 		}
 
 
-		private static function getOriginTemplateFilePath($cacheFilePath) {
+		public static function getOriginTemplateFilePath($cacheFilePath) {
 			$pos = strrpos($cacheFilePath, DIRECTORY_SEPARATOR);
 			return urldecode(substr($cacheFilePath, $pos+1));
 		}

@@ -21,11 +21,41 @@
 			{$foo|capfirst}<br>
 			{$foo|center:"15"}<br>
 			{$foo|cut:"o"}<br>
+			<br>
 			{$foo|capfirst|addslashes}<br>
 			{$foo|capfirst|center:"10"}<br>
 			{$foo|capfirst|cut:"F"|add:"XD"}<br>
+			<br>
 			{$foo|cut:"f"|add:$foo|capfirst}<br>
 #			{$foo|nonexisting}<br>
+			{$people|dictsort:"name"|first|first}<br>
+			<br>
+			{5|divisibleby:3|boolstringfy}<br>
+			{'oh!<br>'|escape}<br>
+			{"testing\r\njavascript 'string\" <b>escaping</b>"|escapejs}<br>
+			{58561513|filesizeformat}<br>
+			<br>
+			{'abcde'|first}<br>
+			{$fruits|first}<br>
+			{$people|first|first}<br>
+			<br>
+			{132.564|floatformat}<br>
+			{132.564|floatformat:2}<br>
+			{132.564|floatformat:-2}<br>
+			{132|floatformat:2}<br>
+			{132|floatformat:-2}<br>
+			<br>
+			{'http://google.com/?a=123&b=456'|iriencode}<br>
+			<br>
+			{'abcde'|last}<br>
+			{$fruits|last}<br>
+			{$people|last|first}{$people|last|last}<br>
+			<br>
+			{'1234'|length}<br>
+			{$fruits|length}<br>
+			{$people|length}<br>
+
+			
 		</p>
 
 		<p>
