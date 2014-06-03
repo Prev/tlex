@@ -20,6 +20,9 @@
 			// process comment out
 			$html = preg_replace('`\n#(.*)`', "\n", $html);
 
+			// {[ en=>'english description', ko=>'korean description' ]}
+			$html = preg_replace('/{\[([\s\S]+?)\]}/', '{% echo Tlex_LocaleHandler::fetchLocale(array($1)); %}', $html);
+
 			// {% // PHP Code %}
 			$html = preg_replace_callback('/{%([\s\S]+?)%}/', array(self, 'parseCode'), $html);
 
