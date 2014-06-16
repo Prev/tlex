@@ -40,6 +40,9 @@
 			// {@@@$foo}
 			$html = preg_replace_callback('/{\s?@@@(\$[^}]+?)\s?}/', array($className, 'parseVarTrace'), $html);
 			
+			// {~'example.css'}
+			$html = preg_replace_callback('/{\s?~([^}]+)\s?}/', array(self, 'parseSources'), $html);
+			
 
 			$html = join('$_SERVER', explode('$__context->_SERVER', $html));
 			$html = join('$_COOKIE', explode('$__context->_COOKIE', $html));
@@ -135,6 +138,64 @@
 			$varname = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__context->$1', $varname, -1);
 
 			return '<?php echo \'<x y=""><pre class="tlex-var-trace">\'; var_dump('.$varname.'); echo \'</x></pre>\' ?>';
+		}
+
+		static protected function parseSources($matches) {
+			$filePath = $matches[1];
+			
+			switch ($filePath) {
+				case 'debugset':
+					return self::printSources(self::getRelPath() . 'tlex/common/beautify-tracing.css') . self::printSources(self::getRelPath() . 'tlex/common/beautify-tracing.js');	
+			}
+
+			if ($filePath[0] == '\'' || $filePath[0] == '"')
+				$filePath = substr($filePath, 1, strlen($filePath)-2);
+
+			return self::printSources($filePath);
+		}
+
+		static protected function printSources($filePath) {
+			$extension = substr(strrchr($filePath, '.'), 1);
+
+			if (file_exists($filePath) && strpos($filePath, '?') === false)
+				$filePath .= '?' . filemtime($filePath);
+
+			switch ($extension) {
+				case 'css' :
+					return '<link rel="stylesheet" type="text/css" href="'.$filePath.'">' . "\r\n";
+					
+				case 'js' :
+					return '<script type="text/javascript" src="'.$filePath.'"></script>' . "\r\n";
+				
+				case 'ico' :
+					return '<link rel="shortcut icon" type="image/x-icon" href="'.$filePath.'">' . "\r\n";
+
+				default :
+					return '<b>Import Error : Unknown type of file : ' . $filePath . '</b>' . "\r\n";
+			}
+		}
+
+
+		private static $relPath;
+		static private function getRelPath() {
+			if (isset(self::$relPath)) return self::$relPath;
+
+			$b = TLEX_BASE_PATH;
+			$b = str_replace('\\', '/', $b);
+			$f = $_SERVER['SCRIPT_FILENAME'];
+			$f = str_replace('\\', '/', $f);
+
+			$tmp = explode('/', $b);
+			$bn = count($tmp);
+
+			$tmp = explode('/', $f);
+			$fn = count($tmp);
+
+			$relPath = '';
+			for ($i=0; $i<$fn-$bn; $i++)
+				$relPath .= '../';
+
+			return self::$relPath = $relPath;
 		}
 
 	}

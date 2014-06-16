@@ -7,23 +7,26 @@ just excute `Tlex::render($templateFileName, $context)`
 
 ```php
 <?php
-  require 'tlex/tlex.php';
+	require 'tlex/tlex.php';
   
-  $context = new StdClass();
-  $context->foo = 'foooooo';
-  $context->fruits = array('apple', 'banana', 'lemon');
+	$context = new StdClass();
+	$context->foo = 'foooooo';
+	$context->fruits = array('apple', 'banana', 'lemon');
 	
-  Tlex::render('example.thtml', $context);
+	Tlex::render('example.thtml', $context);
+?>
 ```
 
 
 ## Template Functions
-+ `{% //php code %}`			--> use php raw code
-+ `{$foo}`				--> print variable
++ `{% //php code %}`		--> use php raw code
++ `{$foo}`					--> print variable
 + `{$foo|trim}`			  	--> print variable with filter(pipe) (like django)
 + `{count($foo)}`		  	--> excute function and print return value
-+ `{@@@$foo}`			    	--> trace(var_dump) variable
++ `{@@@$foo}`			    --> trace(var_dump) variable
 + `{[ en=>'english description', ko=>'korean description' ]}`		--> process multi-language
++ `{~'example.css'}`		-> include css (convert to link tag)
++ `{~'example.js'}`			-> include js (convert to link tag)
 
 
 ## Template Example
@@ -35,6 +38,9 @@ It's almost like django template
 	<head>
 		<meta charset="utf-8">
 		<title>tlex example</title>
+
+		{~debugset} <!-- When trace variable (@@@$var), it looks more beautiful -->
+		{~'example.css'}
 	</head>
 	<body>
 		<!-- print variable -->
@@ -105,6 +111,7 @@ You can add filters and functions to `tlex/user-extensions`
 	@hidden
 	function notFilter($value) {
 	}
+?>
 ```
 
 

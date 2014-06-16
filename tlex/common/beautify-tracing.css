@@ -1,0 +1,15 @@
+pre.tlex-var-trace{
+	background-color:#f8f8f8;
+	border:1px solid #ddd;
+	font-size:13px;
+	line-height:19px;
+	overflow:auto;
+	padding:6px 10px;
+	border-radius:4px;
+	font-family: Consolas, "Liberation Mono", Courier, monospace;
+	color:#333;
+}
+pre.tlex-var-trace .vtrace-first-line{ color:#999 }
+pre.tlex-var-trace .vtrace-string{ color:#d14 }
+pre.tlex-var-trace .vtrace-keyword{ color:#008080 }
+pre.tlex-var-trace .vtrace-light{ color:#39C }

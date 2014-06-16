@@ -3,6 +3,9 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Tlex template example</title>
+
+		{~debugset}
+		{~'example.css'}
 	</head>
 	<body>
 		<h1>Tlex template example</h1>
