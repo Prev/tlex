@@ -56,7 +56,7 @@
 			if (!is_array($value)) return NULL;
 
 			$j = json_encode($value);
-			return 'Array(' . substr($j, 1, strlen($j)-2) . ')';
+			return 'Array[' . substr($j, 1, strlen($j)-2) . ']';
 		}
 
 		public function boolstrfy($value) {
@@ -327,6 +327,13 @@
 			return str_replace(' ', '&nbsp;', $value);
 		}
 
+		public function objectstrfy($value) {
+			if (!is_array($value)) return NULL;
+
+			$j = json_encode($value);
+			return 'Object{' . substr($j, 1, strlen($j)-2) . '}';
+		}
+
 		public function pluralize($value, $suffix='s') {
 			$default = '';
 			if (strpos($suffix, ',') !== false) {
@@ -382,6 +389,22 @@
 
 		public function striptags($value) {
 			return strip_tags($value);
+		}
+
+		public function strfy($value) {
+			switch (gettype($value)) {
+				case 'array':
+					return $this->arraystrfy($value);
+
+				case 'object':
+					return $this->objectstrfy($value);
+
+				case 'boolean':
+					return $this->boolstrfy($value);
+
+				default :
+					return $value;
+			}
 		}
 
 		public function time($value, $format='H:i:s') {
@@ -450,9 +473,19 @@
 		}
 
 		public function unordered_list($value) {
-			/**
-				TODO
-			*/
+			if (!is_array($value)) return NULL;
+
+			$html = '<ul>';
+
+			for ($i=0; $i<count($value); $i++) { 
+				if (is_array($value[$i]))
+					$html .= $this->unordered_list($value[$i]);
+				else
+					$html .= '<li>'.$value[$i].'</li>';
+			}
+
+			$html .= '</ul>';
+			return $html;
 		}
 
 		public function upper($value) {

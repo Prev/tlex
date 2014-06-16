@@ -2,20 +2,48 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>tlex example</title>
+		<title>Tlex template example</title>
 	</head>
 	<body>
+		<h1>Tlex template example</h1>
+
+		<h2>Print variable</h2>
 		<p>
-			<h4>print variable</h3>
+			#{$foo}
 			{$foo}
 		</p>
+		
+
+		<h2>Functions</h2>
 		<p>
-			<h4>function</h3>
 			{printLicense()}<br><br>
 			{printLicense(true)}
 		</p>
+		
+
+		<h2>For loop</h2>
 		<p>
-			<h4>filter (pipe)</h3>
+			<ul>
+				{% for ($i=1; $i<=5; $i++) : %}
+					<li>{$i}</li>
+				{% endfor; %}
+			</ul>
+		</p>
+
+
+		<h2>Print array by foreach</h2>
+		<p>
+			<ul>
+				{% foreach ($fruits as $key => $item) : %}
+					<li>{$item}</li>
+				{% endforeach; %}
+			</ul>
+		</p>
+
+
+
+		<h2>Filter (pipe)</h2>
+		<p>
 			{$foo|capfirst}<br>
 			{$foo|center:"15"}<br>
 			{$foo|cut:"o"}<br>
@@ -27,7 +55,8 @@
 			<br>
 
 			{$foo|cut:"f"|add:$foo|capfirst}<br>
-			{$people|dictsort:"name"|first|first}<br>
+			{$people|arraystrfy}<br>
+			{$people|dictsort:"name"|arraystrfy}<br>
 			<br>
 
 			{5|divisibleby:3|boolstrfy}<br>
@@ -87,33 +116,17 @@
 			{'Check out http://github.com/Prev/tlex'|urlize}<br>
 			{'Check out github.com/Prev/tlex'|urlizetrunc:15}<br>
 			<br>
-			
 		</p>
 
-		<p>
-			<h4>for loop</h3>
-			<ul>
-				{% for ($i=1; $i<=5; $i++) : %}
-					<li>{$i}</li>
-				{% endfor; %}
-			</ul>
-		</p>
-		<p>
-			<h4>print array by foreach</h3>
-			<ul>
-				{% foreach ($fruits as $key => $item) : %}
-					<li>{$item}</li>
-				{% endforeach; %}
-			</ul>
-		</p>
 
+		<h2>Trace(var_dump) variable</h2>
 		<p>
-			<h4>trace(var_dump) variable</h3>
 			{@@@$foo}
 		</p>
 
+
+		<h2>Multi-language</h2>
 		<p>
-			<h4>multi-language</h3>
 			{['en'=>'this is english description', 'ko'=>'한국어 설명']}
 		</p>
 
