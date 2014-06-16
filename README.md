@@ -23,15 +23,7 @@ just excute `Tlex::render($templateFileName, $context)`
 + `{$foo|trim}`			  	--> print variable with filter(pipe) (like django)
 + `{count($foo)}`		  	--> excute function and print return value
 + `{@@@$foo}`			    	--> trace(var_dump) variable
-+ `{[ en=>'english description', ko=>'korean description' ]}`
-
-
-## Make custom filters, functions
-You can add filters and functions to `tlex/user-extensions`
-
-
-## License
-MIT LICENSE
++ `{[ en=>'english description', ko=>'korean description' ]}`		--> process multi-language
 
 
 ## Template Example
@@ -45,56 +37,44 @@ It's almost like django template
 		<title>tlex example</title>
 	</head>
 	<body>
-		<p>
-			<h4>print variable</h3>
-			{$foo}
-		</p>
-		<p>
-			<h4>function</h3>
-			{printLicense()}
-		</p>
-		<p>
-			<h4>filter (pipe)</h3>
-			{$foo|capfirst}<br>
-			{$foo|center:"15"}<br>
-			{$foo|cut:"o"}<br>
-			{$people|dictsort:"name"|arraystrfy}<br>
-			{'oh!<br>'|escape}<br>
-			{$people|first|first}<br>
-			{$people|length}<br>
-			{"dasd\n\ndas\naa"|linebreaks}
-			{'Check out github.com/Prev/tlex'|urlize}<br>
-		</p>
+		<!-- print variable -->
+		{$foo}
+	
+		<!-- excute function -->
+		{printLicense()}
+		
+		<!-- apply filter (like django) -->
+		{$foo|capfirst}<br>
+		{$foo|center:"15"}<br>
+		{$foo|cut:"o"}<br>
+		{$people|dictsort:"name"|arraystrfy}<br>
+		{'oh!<br>'|escape}<br>
+		{$people|first|first}<br>
+		{$people|length}<br>
+		{"dasd\n\ndas\naa"|linebreaks}
+		{'Check out github.com/Prev/tlex'|urlize}<br>
+		
+		<!-- for loop -->
+		<ul>
+		{% for ($i=1; $i<=5; $i++) : %}
+			<li>{$i}</li>
+		{% endfor; %}
+		</ul>
+	
+		<!--  print array by foreach  -->
+		<ul>
+		{% foreach ($fruits as $key => $item) : %}
+			<li>{$item}</li>
+			{% endforeach; %}
+		</ul>
+		
+		<!-- trace(var_dump) variable -->
+		{@@@$foo}
 
-		<p>
-			<h4>for loop</h3>
-			<ul>
-				{% for ($i=1; $i<=5; $i++) : %}
-					<li>{$i}</li>
-				{% endfor; %}
-			</ul>
-		</p>
-		<p>
-			<h4>print array by foreach</h3>
-			<ul>
-				{% foreach ($fruits as $key => $item) : %}
-					<li>{$item}</li>
-				{% endforeach; %}
-			</ul>
-		</p>
+		<!-- multi-language -->
+		{['en'=>'this is english description', 'ko'=>'한국어 설명']}
 
-		<p>
-			<h4>trace(var_dump) variable</h3>
-			{@@@$foo}
-		</p>
-
-		<p>
-			<h4>multi-language</h3>
-			{['en'=>'this is english description', 'ko'=>'한국어 설명']}
-		</p>
-
-#		Comment out
-#
+		<!-- Comment out -->
 #		This message wouldn't be shown
 #		Haha
 
@@ -103,4 +83,30 @@ It's almost like django template
 
 ```
 
+
+## Filters ★
+You can use all of django built-in filters.
+[https://docs.djangoproject.com/en/dev/ref/templates/builtins/#built-in-filter-reference](view django built-in filter)
+
+
+
+## Make custom filters, functions
+You can add filters and functions to `tlex/user-extensions`
+
+```php
+<?php
+	//register function as filter (public function)
+	@regit
+	function customFilter($value) {
+	}
+	
+	//do not register function as filter (private function)
+	@hidden
+	function notFilter($value) {
+	}
+```
+
+
+## License
+[https://github.com/Prev/tlex/blob/master/LICENSE](MIT LICENSE)
 
