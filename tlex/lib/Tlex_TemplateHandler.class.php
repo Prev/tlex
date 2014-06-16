@@ -17,6 +17,8 @@
 			self::$html = $html;
 			self::$tplName = $tplName;
 
+			$className = get_class();
+
 			// process comment out
 			$html = preg_replace('`\n#(.*)`', "\n", $html);
 
@@ -24,19 +26,19 @@
 			$html = preg_replace('/{\[([\s\S]+?)\]}/', '{% echo Tlex_LocaleHandler::fetchLocale(array($1)); %}', $html);
 
 			// {% // PHP Code %}
-			$html = preg_replace_callback('/{%([\s\S]+?)%}/', array(self, 'parseCode'), $html);
+			$html = preg_replace_callback('/{%([\s\S]+?)%}/', array($className, 'parseCode'), $html);
 
 			// {$foo|filter}
-			$html = preg_replace_callback('/{\s?(\$?[^}|]+)((\|[^}|]+)+)\s?}/', array(self, 'parseFilter'), $html);
+			$html = preg_replace_callback('/{\s?([^}|]+)((\|[^}|]+)+)\s?}/', array($className, 'parseFilter'), $html);
 
 			// {$foo}
-			$html = preg_replace_callback('/{\s?(\$[^}]+?)\s?}/', array(self, 'parseVar'), $html);
+			$html = preg_replace_callback('/{\s?(\$[^}]+?)\s?}/', array($className, 'parseVar'), $html);
 			
 			// {func()}
-			$html = preg_replace_callback("/{\s?([a-zA-Z0-9_]+)\((.*?)\)\s?}/", array(self, 'parseFunc'), $html);
+			$html = preg_replace_callback("/{\s?([a-zA-Z0-9_]+)\((.*?)\)\s?}/", array($className, 'parseFunc'), $html);
 			
 			// {@@@$foo}
-			$html = preg_replace_callback('/{\s?@@@(\$[^}]+?)\s?}/', array(self, 'parseTrace'), $html);
+			$html = preg_replace_callback('/{\s?@@@(\$[^}]+?)\s?}/', array($className, 'parseVarTrace'), $html);
 			
 
 			$html = join('$_SERVER', explode('$__context->_SERVER', $html));
@@ -67,7 +69,8 @@
 			$varname = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__context->$1', $varname, -1);
 			$filters_str = substr($matches[2], 1) . '|';
 			$filters = array();
-
+			$pof = NULL;
+			
 			for ($i=0; $i<strlen($filters_str); $i++) { 
 				if ($filters_str[$i] == '|') {
 					$cn = array();
@@ -97,13 +100,6 @@
 		}
 
 		static private function getFilterCode($data, $filter, $params=NULL) {
-			if (!method_exists('Tlex_Filter', $filter) && !method_exists('Tlex_ExtendedFilter', $filter)) {
-				Tlex_ErrorHandler::throwCompileError(
-					self::$tplName,
-					'filter does not exists',
-					self::getLineNumberBySearchingKeyword('|'.$filter)
-				);
-			}
 			$params = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__context->$1', $params, -1);
 			return '$__filter->' .$filter . '(' . $data . ($params ? ', '.$params : '') . ')';
 		}
@@ -130,30 +126,15 @@
 			$args = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__context->$1', $args, -1);
 			$args = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__context->$1}', $args, -1);
 
-			if (!function_exists($function)) {
-				Tlex_ErrorHandler::throwCompileError(
-					self::$tplName,
-					'function does not exists',
-					self::getLineNumberBySearchingKeyword($matches[0])
-				);
-			}
-
 			return '<?php $func=' . $function.'('.$args.')' . '; if (isset($func)) echo $func; ?>';
 		}
 
 
-		static protected function parseTrace($matches) {
+		static protected function parseVarTrace($matches) {
 			$varname = $matches[1];
 			$varname = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__context->$1', $varname, -1);
 
-			return '<?php echo \'<x y=""><pre class="vdump">\'; var_dump('.$varname.'); echo \'</x></pre>\' ?>';
-		}
-
-		static private function getLineNumberBySearchingKeyword($keyword) {
-			$p = strpos(self::$html, $keyword);
-			$str = substr(self::$html, 0, $p);
-			$a = explode("\n", $str);
-			return count($a);
+			return '<?php echo \'<x y=""><pre class="tlex-var-trace">\'; var_dump('.$varname.'); echo \'</x></pre>\' ?>';
 		}
 
 	}

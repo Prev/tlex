@@ -36,6 +36,13 @@
 
 	error_reporting(E_ALL & ~E_NOTICE);
 
+	header('Content-Type: text/html; charset=utf8');
+
+	/*$acceptEncodings = explode(',', $_SERVER['HTTP_ACCEPT_ENCODING']);
+	$gzipAvailable = array_search('gzip', $acceptEncodings) !== false;
+	($gzipAvailable) ? ob_start('ob_gzhandler') : ob_start();*/
+	ob_start();
+	
 
 	define('TLEX', true);
 
@@ -60,5 +67,5 @@
 
 
 	register_shutdown_function(array('Tlex_ErrorHandler', 'parseShutdownHandler'));
-	
+
 	Tlex::init();

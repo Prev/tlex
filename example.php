@@ -1,7 +1,9 @@
 <?php
-
+	
+	date_default_timezone_set('Asia/Seoul');
+	
 	require 'tlex/tlex.php';
-
+	
 	$context = new StdClass();
 	$context->foo = 'foooooo';
 	$context->fruits = array('apple', 'banana', 'lemon');

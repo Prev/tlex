@@ -12,16 +12,34 @@
 	class Tlex_ErrorHandler {
 
 		public static function parseShutdownHandler() {
+			$ds = DIRECTORY_SEPARATOR;
 			$error = error_get_last();
-			
-			if (strpos($error['file'], TLEX_BASE_PATH.DIRECTORY_SEPARATOR.'cache') !== false) {
-				if ($error['type'] == E_PARSE)
-					$errorName = 'Template Parse Error';
-				else if (strpos($error['message'], 'Call to private method') === 0)
-					$errorName = 'Call hidden filter';
-				else
-					return;
 
+			if (strpos($error['file'], TLEX_BASE_PATH.$ds.'cache') !== false) {
+				if (strpos($error['message'], 'Call to private method') === 0)
+					$errorName = 'Call hidden filter';
+				else {
+					switch ($error['type']) {
+						case E_ERROR:
+							$errorName = 'Template Fatal Error';
+							break;
+						
+						case E_WARNING:
+							$errorName = 'Template Warning';
+							break;
+
+						case E_PARSE:
+							$errorName = 'Template Parse Error';
+							break;
+
+						default:
+							return;
+					}
+				}
+				
+				ob_clean();
+				
+				
 				self::renderErrorPageWithCode(
 					$errorName,
 					$error['message'],
@@ -30,19 +48,8 @@
 					self::getOriginTemplateFilePath($error['file']),
 					$error['file']
 				);
+
 			}
-		}
-
-
-		public static function throwCompileError($tplName, $errorMessage, $line, $range=4) {
-			self::renderErrorPageWithCode(
-				'Template Compile Error',
-				$errorMessage,
-				$line,
-				$range,
-				$tplName,
-				NULL
-			);
 		}
 
 

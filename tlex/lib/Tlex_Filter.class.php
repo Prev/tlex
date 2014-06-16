@@ -52,7 +52,14 @@
 			return addslashes($value);
 		}
 
-		public function boolstringfy($value) {
+		public function arraystrfy($value) {
+			if (!is_array($value)) return NULL;
+
+			$j = json_encode($value);
+			return 'Array(' . substr($j, 1, strlen($j)-2) . ')';
+		}
+
+		public function boolstrfy($value) {
 			if ($value === true)
 				return 'True';
 			else if ($value === false)
@@ -259,11 +266,290 @@
 			}
 		}
 
+		public function len($value) {
+			return $this->length($value);
+		}
+
 		public function length_is($value, $compare) {
-			if (!isset($del)) return self::throwArgumentMissingError();
+			if (!isset($compare)) return self::throwArgumentMissingError();
 
 			return $this->length($value) == $compare;
 		}
+
+		public function linebreaks($value) {
+			$value = str_replace("\r\n", "\n", $value);
+			$value = str_replace("\n\n", '</p><p>', $value);
+			$value = '<p>' . $value . '</p>';
+			$value = str_replace("\n", '<br>', $value);
+			return $value;
+		}
+
+		public function linebreaksbr($value) {
+			$value = str_replace("\r\n", "\n", $value);
+			$value = str_replace("\n", '<br>', $value);
+			return $value;
+		}
+
+		public function linenumbers($value) {
+			$value = str_replace("\r\n", "\n", $value);
+			$result = '';
+			$arr = explode("\n", $value);
+			for ($i=0; $i<count($arr); $i++) 
+				$result .= ($i+1) . '. ' . $arr[$i] . "\n";
+			return $result;
+		}
+
+		public function ljust($value, $fieldsize) {
+			if (!isset($fieldsize)) return self::throwArgumentMissingError();
+
+			$value = (string)$value;
+			$n = $fieldsize - strlen($value);
+			for ($i=0; $i<$n; $i++)
+				$value .= ' ';
+			return $value;
+		}
+
+		public function lower($value) {
+			if (!is_string($value)) return NULL;
+			return strtolower($value);
+		}
+
+		public function make_list($value) {
+			$value = (string)$value;
+			$arr = array();
+			for ($i=0; $i<strlen($value); $i++)
+				array_push($arr, $value);
+			return $arr;
+			
+		}
+
+		public function nbsp($value) {
+			return str_replace(' ', '&nbsp;', $value);
+		}
+
+		public function pluralize($value, $suffix='s') {
+			$default = '';
+			if (strpos($suffix, ',') !== false) {
+				$tmp = explode(',', $suffix);
+				$default = $tmp[0];
+				$suffix = $tmp[1];
+			}
+
+			return ($value > 1) ? $suffix : $default;
+		}
+
+		public function random($value) {
+			if (!is_array($value)) return NULL;
+
+			$i = rand(0, count($value)-1);
+			return $value[$i];
+		}
+
+		public function removetags($value, $tags) {
+			if (!isset($tags)) return self::throwArgumentMissingError();
+
+			$tags = explode(' ', $tags);
+			for ($i=0; $i<count($tags); $i++) { 
+				$tag = $tags[$i];
+				$value = preg_replace('/<(?:\s|\/?)*'.$tag.'\s*>/', '', $value);
+			}
+			return $value;
+		}
+
+		public function rjust($value, $fieldsize) {
+			if (!isset($fieldsize)) return self::throwArgumentMissingError();
+
+			$value = (string)$value;
+			$n = $fieldsize - strlen($value);
+			for ($i=0; $i<$n; $i++)
+				$value = ' ' . $value;
+			return $value;
+		}
+
+		public function slice($value, $offset) {
+			if (!isset($offset)) return self::throwArgumentMissingError();
+			if (!is_array($value)) return NULL;
+
+			array_slice($value, $offset);
+			return $value;
+		}
+
+		public function slugify($value) {
+			$value = strtolower($value);
+			$value = preg_replace('/[^a-z ]/', '', $value);
+			return str_replace(' ', '-', $value);
+		}
+
+		public function striptags($value) {
+			return strip_tags($value);
+		}
+
+		public function time($value, $format='H:i:s') {
+			return date($format, $value);
+		}
+
+		public function timesince($value, $since) {
+			if (!isset($since)) return self::throwArgumentMissingError();
+
+			if (is_string($since)) $since = strtotime($since);
+			if (is_string($value)) $value = strtotime($value);
+
+			$diff = $since - $value;
+			if ($diff < 3600)
+				return (int)($diff / 60) . ' minutes';
+			else if ($diff < 86400)
+				return (int)($diff / 3600) . ' hours';
+			else
+				return (int)($diff / 86400) . ' days';
+		}
+
+		public function timeuntil($value, $since) {
+			if (!isset($since)) return self::throwArgumentMissingError();
+
+			if (is_string($since)) $since = strtotime($since);
+			if (is_string($value)) $value = strtotime($value);
+
+			$diff = $value - $since;
+			if ($diff < 3600)
+				return (int)($diff / 60) . ' minutes';
+			else if ($diff < 86400)
+				return (int)($diff / 3600) . ' hours';
+			else
+				return (int)($diff / 86400) . ' days';
+		}
+
+		public function title($value) {
+			$arr = explode(' ', $value);
+			for ($i=0; $i<count($arr); $i++)
+				$arr[$i] = ucfirst( strtolower( $arr[$i] ) );
+			return join(' ', $arr);
+		}
+
+		public function truncatechars($value, $num) {
+			if (!isset($num)) return self::throwArgumentMissingError();
+			if (!is_string($value)) return NULL;
+
+			$num = intval($num);
+
+			if (strlen($value) <= $num+3)
+				return $value;
+			else
+				return substr($value, 0, $num-3) . '...';
+		}
+
+		public function truncatewords($value, $num) {
+			if (!isset($num)) return self::throwArgumentMissingError();
+			if (!is_string($value)) return NULL;
+
+			$arr = explode(' ', $value);
+			$result = '';
+			for ($i=0; $i<$num; $i++)
+				$result .= $arr[$i] . ' ';
+			$result .= '...';
+			return $result;
+		}
+
+		public function unordered_list($value) {
+			/**
+				TODO
+			*/
+		}
+
+		public function upper($value) {
+			if (!is_string($value)) return NULL;
+			return strtoupper($value);
+		}
+
+		public function urlencode($value) {
+			if (!is_string($value)) return NULL;
+			return urlencode($value);
+		}
+
+		public function urldecode($value) {
+			if (!is_string($value)) return NULL;
+			return urldecode($value);
+		}
+
+
+		private $_url_target;
+		private $_urlize_reg = '/(https?:\/\/(?:[a-zA-Z0-9\/._\%\?\=\&\#\+-])+)|([a-zA-Z0-9\/._-]+\.(?:com|net|org|edu|gov|int|mil|kr|io|me|gl|ly)[a-zA-Z0-9\/._\%\?\=\&\#\+-]*)/';
+		private $_urlize_trunknum;
+
+		public function urlize($value, $target=NULL) {
+			$this->_url_target = $target;
+
+			return preg_replace_callback($this->_urlize_reg, array($this, 'urlize_callback'), $value);
+		}
+
+		private function urlize_callback($matches) {
+			$targetTag = ($this->_url_target) ? ' target="'.$this->_url_target.'"' : '';
+			if ($matches[1])
+				return '<a href="' . $matches[1] . '"'.$targetTag.'>'.$matches[1].'</a>';
+			else if ($matches[2])
+				return '<a href="http://' . $matches[2] . '"'.$targetTag.'>'.$matches[2].'</a>';
+			else
+				return $matches[0];
+		}
+
+		public function urlizetrunc($value, $trunknum, $target=NULL) {
+			if (!isset($trunknum)) return self::throwArgumentMissingError();
+			$this->_url_target = $target;
+			$this->_urlize_trunknum = $trunknum;
+
+			return preg_replace_callback($this->_urlize_reg, array($this, 'urlizetrunc_callback'), $value);
+		}
+
+		private function urlizetrunc_callback($matches) {
+			$targetTag = ($this->_url_target) ? ' target="'.$this->_url_target.'"' : '';
+			if ($matches[1])
+				return '<a href="' . $matches[1] . '"'.$targetTag.'>'.$this->truncatechars($matches[1], $this->_urlize_trunknum).'</a>';
+			else if ($matches[2])
+				return '<a href="http://' . $matches[2] . '"'.$targetTag.'>'.$this->truncatechars($matches[2], $this->_urlize_trunknum).'</a>';
+			else
+				return $matches[0];
+		}
+
+		public function wordcount($value) {
+			$arr = explode(' ', $value);
+			return count($value);
+		}
+
+		public function wordwrap($value, $num) {
+			if (!isset($num)) return self::throwArgumentMissingError();
+
+			$n = 0;
+			for ($i=0; $i<strlen($value); $i++) { 
+				if ($n == $num) {
+					if ($value[$i] == ' ')
+						$value = substr($value, 0, $i) . "\n" . substr($value, $i+1);
+					else
+						$value = substr($value, 0, $i) . "\n" . substr($value, $i);
+					$n = 0;
+				}
+				
+				$n++;
+			}
+			return $value;
+		}
+
+		public function yesno($value, $arg=NULL) {
+			if ($arg == NULL)
+				return $value == true ? 'yes' : 'no';
+			else {
+				$arg = explode(',', $arg);
+				if (!isset($arg[2])) $arg[2] = $arg[1];
+
+				if ($value === true)
+					return $arg[0];
+				else if ($value === false)
+					return $arg[1];
+				else if ($value == NULL)
+					return $arg[2];
+				else
+					return '';
+			}
+		}
+
 	}
 
 	

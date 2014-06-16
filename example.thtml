@@ -13,48 +13,80 @@
 			<h4>function</h3>
 			{printLicense()}<br><br>
 			{printLicense(true)}
-#			{nonExistingFunc()}
 		</p>
-
 		<p>
 			<h4>filter (pipe)</h3>
 			{$foo|capfirst}<br>
 			{$foo|center:"15"}<br>
 			{$foo|cut:"o"}<br>
 			<br>
+
 			{$foo|capfirst|addslashes}<br>
 			{$foo|capfirst|center:"10"}<br>
 			{$foo|capfirst|cut:"F"|add:"XD"}<br>
 			<br>
+
 			{$foo|cut:"f"|add:$foo|capfirst}<br>
-#			{$foo|nonexisting}<br>
 			{$people|dictsort:"name"|first|first}<br>
 			<br>
-			{5|divisibleby:3|boolstringfy}<br>
+
+			{5|divisibleby:3|boolstrfy}<br>
 			{'oh!<br>'|escape}<br>
 			{"testing\r\njavascript 'string\" <b>escaping</b>"|escapejs}<br>
 			{58561513|filesizeformat}<br>
 			<br>
+
 			{'abcde'|first}<br>
 			{$fruits|first}<br>
 			{$people|first|first}<br>
 			<br>
+
 			{132.564|floatformat}<br>
 			{132.564|floatformat:2}<br>
 			{132.564|floatformat:-2}<br>
 			{132|floatformat:2}<br>
 			{132|floatformat:-2}<br>
 			<br>
+
 			{'http://google.com/?a=123&b=456'|iriencode}<br>
 			<br>
+
 			{'abcde'|last}<br>
 			{$fruits|last}<br>
 			{$people|last|first}{$people|last|last}<br>
 			<br>
+
 			{'1234'|length}<br>
 			{$fruits|length}<br>
 			{$people|length}<br>
+			<br>
 
+			{"dasd\n\ndas\naa"|linebreaks}
+			{"dasd\n\ndas\naa"|linebreaksbr}
+			<br>
+
+			@{'das'|ljust:10|nbsp}@<br>
+			@{'das'|rjust:10|nbsp}@<br>
+			{'abcde'|make_list|arraystrfy}<br>
+			You have 2 message{2|pluralize}<br>
+			<br>
+
+			{'<b>Joel</b> <button>is</button> a <span>slug</span>'|removetags:'b span'}<br>
+			{$fruits|slice:1|arraystrfy}<br>
+			{'Joel is a slug'|slugify}
+			<br>
+
+			{strtotime('-2 hour')|timesince:strtotime('+2 hour')}<br>
+			{'my FIRST post'|title}<br>
+			{'Joel is'|truncatechars:9}<br>
+			{'Joel is a slug'|truncatechars:9}<br>
+			{'Joel is a slug'|truncatewords:2}<br>
+			<br>
+
+			{'Check out github.com/Prev/tlex'|urlize}<br>
+			{'Check out http://github.com/Prev/tlex'|urlize}<br>
+			{'Check out github.com/Prev/tlex'|urlizetrunc:15}<br>
+			<br>
 			
 		</p>
 
@@ -84,7 +116,6 @@
 			<h4>multi-language</h3>
 			{['en'=>'this is english description', 'ko'=>'한국어 설명']}
 		</p>
-
 
 #		Comment out
 #
