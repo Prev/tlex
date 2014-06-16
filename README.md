@@ -86,7 +86,8 @@ It's almost like django template
 
 ## Filters ★
 You can use all of django built-in filters.
-[https://docs.djangoproject.com/en/dev/ref/templates/builtins/#built-in-filter-reference](view django built-in filter)
+
+[view django built-in filter](https://docs.djangoproject.com/en/dev/ref/templates/builtins/#built-in-filter-reference)
 
 
 
@@ -108,5 +109,5 @@ You can add filters and functions to `tlex/user-extensions`
 
 
 ## License
-[https://github.com/Prev/tlex/blob/master/LICENSE](MIT LICENSE)
+[MIT LICENSE](https://github.com/Prev/tlex/blob/master/LICENSE)
 
