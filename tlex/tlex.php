@@ -22,15 +22,8 @@
 	 * {count($foo)}			--> excute function and print return value
 	 * {@@@$foo}				--> trace(var_dump) variable
 	 * {[ en=>'english description', ko=>'korean description' ]}	--> multi language process
-	 *
-	 * ------------------------------------------
-	 * UPDATING SOON
-	 * ------------------------------------------
-	 *
-	 * {#css} or {#stylesheets}		-> print imported stylesheets
-	 * {#js} or {#javascript}		-> print imported javascripts
-	 * {#meta}						-> print imported metatags
-	 *
+	 * {~'example.css'}		-> include css (convert to link tag)
+	 * {~'example.js'}			-> include js (convert to link tag)
 	 */
 
 
@@ -42,7 +35,7 @@
 	$gzipAvailable = array_search('gzip', $acceptEncodings) !== false;
 	($gzipAvailable) ? ob_start('ob_gzhandler') : ob_start();*/
 	ob_start();
-	
+
 
 	define('TLEX', true);
 
@@ -50,7 +43,7 @@
 
 	define('TLEX_DEFAULT_TEMPLATE_FILE_EXTENSION', 'thtml');
 
-	define('TLEX_ALWAYS_MAKE_CACHE', true);
+	define('TLEX_ZIP_BLANK', false);
 
 	define('TLEX_DEFAULT_LOCALE', 'en');
 

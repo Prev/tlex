@@ -23,17 +23,20 @@
 			
 		}
 
-		static public function compileTemplate($tplName) {
-			if (!self::isCacheUsable($tplName)) {
+		static public function compileTemplate($tplName, $zipBlank) {
+			if (!self::isCacheUsable($tplName, $zipBlank)) {
 				//make cache
 
 				$html = file_get_contents($tplName);
-				$html = Tlex_TemplateHandler::compileTemplate($html, $tplName);
+				$html = Tlex_TemplateHandler::compileTemplate($html, $tplName, $zipBlank);
 				
-				$fp = fopen(self::getCacheFilePath($tplName), 'w');
+				$fp = fopen(self::getCacheFilePath($tplName, $zipBlank), 'w');
 				fwrite($fp, $html);
 				fclose($fp);
+
+				return true;
 			}
+			return false;
 		}
 
 		static public function complieExtendedFilter() {
@@ -53,19 +56,17 @@
 			}
 		}
 
-		static public function getCacheFilePath($tplName) {
+		static public function getCacheFilePath($tplName, $zipped=false) {
 			$relPath = $_SERVER['SCRIPT_FILENAME'];
 			$offset = strrpos($relPath, '/');
 			$relPath = substr($relPath, 0, $offset);
 
-			return TLEX_BASE_PATH . self::CACHE_DIR . '/' .urlencode($relPath . '/' . basename($tplName));
+			return TLEX_BASE_PATH . self::CACHE_DIR . '/' .urlencode(($zipped ? 'zipped_' : '') . $relPath . '/' . basename($tplName));
 		}
 
-		static private function isCacheUsable($filename) {
-			if (TLEX_ALWAYS_MAKE_CACHE) return false;
-
-			$cachePath = self::getCacheFilePath($tplName);
-			return is_file($cachePath) && filemtime($cachePath) > filemtime($tplName);
+		static public function isCacheUsable($filename, $zipBlank=false) {
+			$cachePath = self::getCacheFilePath($filename, $zipBlank);
+			return is_file($cachePath) && filemtime($cachePath) > filemtime($filename);
 		}
 
 	}

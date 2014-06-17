@@ -10,12 +10,14 @@
 
 	class Tlex_TemplateHandler {
 
-		private static $html;
-		private static $tplName;
+		protected static $html;
+		protected static $tplName;
+		protected static $zipBlank;
 
-		static public function compileTemplate($html, $tplName) {
+		static public function compileTemplate($html, $tplName, $zipBlank=false) {
 			self::$html = $html;
 			self::$tplName = $tplName;
+			self::$zipBlank = $zipBlank;
 
 			$className = get_class();
 
@@ -53,6 +55,9 @@
 			$html = join('$_SESSION', explode('$__context->_SESSION', $html));
 			
 			$html = preg_replace('/([a-zA-Z0-9_])::\$__context->(.*)/', '$1::\$$2', $html);
+
+
+			if ($zipBlank) $html = self::deleteWhiteSpace($html);
 
 
 			return $html;
@@ -145,7 +150,7 @@
 			
 			switch ($filePath) {
 				case 'debugset':
-					return self::printSources(self::getRelPath() . 'tlex/common/beautify-tracing.css') . self::printSources(self::getRelPath() . 'tlex/common/beautify-tracing.js');	
+					return self::printSources(self::getPathPrefix() . 'tlex/common/beautify-tracing.css') . self::printSources(self::getPathPrefix() . 'tlex/common/beautify-tracing.js');	
 			}
 
 			if ($filePath[0] == '\'' || $filePath[0] == '"')
@@ -156,29 +161,86 @@
 
 		static protected function printSources($filePath) {
 			$extension = substr(strrchr($filePath, '.'), 1);
+			$lineEnd = self::$zipBlank ? '' : "\r\n";
 
 			if (file_exists($filePath) && strpos($filePath, '?') === false)
 				$filePath .= '?' . filemtime($filePath);
 
 			switch ($extension) {
 				case 'css' :
-					return '<link rel="stylesheet" type="text/css" href="'.$filePath.'">' . "\r\n";
+					return '<link rel="stylesheet" type="text/css" href="'.$filePath.'">' . $lineEnd;
 					
 				case 'js' :
-					return '<script type="text/javascript" src="'.$filePath.'"></script>' . "\r\n";
+					return '<script type="text/javascript" src="'.$filePath.'"></script>' . $lineEnd;
 				
 				case 'ico' :
-					return '<link rel="shortcut icon" type="image/x-icon" href="'.$filePath.'">' . "\r\n";
+					return '<link rel="shortcut icon" type="image/x-icon" href="'.$filePath.'">' . $lineEnd;
 
 				default :
-					return '<b>Import Error : Unknown type of file : ' . $filePath . '</b>' . "\r\n";
+					return '<b>Import Error : Unknown type of file : ' . $filePath . '</b>' . $lineEnd;
 			}
 		}
 
+		private static function deleteWhiteSpace($content) {
+			if (strpos($content, ">\t") !== false) {
+				$content = str_replace(">\t", '>', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			if (strpos($content, ">\r\n") !== false) {
+				$content = str_replace(">\r\n", '>', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			if (strpos($content, ">\n") !== false) {
+				$content = str_replace(">\n", '>', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			
+			if (strpos($content, "<\t") !== false) {
+				$content = str_replace("<\t", '<', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			if (strpos($content, "<\r\n") !== false) {
+				$content = str_replace("<\r\n", '<', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			if (strpos($content, "<\n") !== false) {
+				$content = str_replace("<\n", '<', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			
+			if (strpos($content, "\t<?php") !== false) {
+				$content = str_replace("\t<?php", '<?php', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			if (strpos($content, "\r\n<?php") !== false) {
+				$content = str_replace("\r\n<?php", '<?php', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			if (strpos($content, "\n<?php") !== false) {
+				$content = str_replace("\n<?php", '<?php', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			
+			if (strpos($content, "?>\t") !== false) {
+				$content = str_replace("?>\t", '?>', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			if (strpos($content, "?>\r\n") !== false) {
+				$content = str_replace("?>\r\n", '?>', $content);
+				return self::deleteWhiteSpace($content);
+			}
+			if (strpos($content, "?>\n") !== false) {
+				$content = str_replace("?>\n", '?>', $content);
+				return self::deleteWhiteSpace($content);
+			}
 
-		private static $relPath;
-		static private function getRelPath() {
-			if (isset(self::$relPath)) return self::$relPath;
+			return $content;
+		}
+
+
+		private static $pathPrefix;
+		static private function getPathPrefix() {
+			if (isset(self::$pathPrefix)) return self::$pathPrefix;
 
 			$b = TLEX_BASE_PATH;
 			$b = str_replace('\\', '/', $b);
@@ -191,11 +253,11 @@
 			$tmp = explode('/', $f);
 			$fn = count($tmp);
 
-			$relPath = '';
+			$pathPrefix = '';
 			for ($i=0; $i<$fn-$bn; $i++)
-				$relPath .= '../';
+				$pathPrefix .= '../';
 
-			return self::$relPath = $relPath;
+			return self::$pathPrefix = $rpathPrefixelPath;
 		}
 
 	}

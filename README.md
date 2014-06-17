@@ -29,6 +29,13 @@ just excute `Tlex::render($templateFileName, $context)`
 + `{~'example.js'}`			-> include js (convert to link tag)
 
 
+## Filters ★
+You can use all of django built-in filters.
+
+[view django built-in filter](https://docs.djangoproject.com/en/dev/ref/templates/builtins/#built-in-filter-reference)
+
+
+
 ## Template Example
 It's almost like django template
 
@@ -88,13 +95,6 @@ It's almost like django template
 </html>
 
 ```
-
-
-## Filters ★
-You can use all of django built-in filters.
-
-[view django built-in filter](https://docs.djangoproject.com/en/dev/ref/templates/builtins/#built-in-filter-reference)
-
 
 
 ## Make custom filters, functions

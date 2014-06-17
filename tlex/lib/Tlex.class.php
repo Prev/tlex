@@ -24,7 +24,7 @@
 		}
 		
 
-		static public function render($tplName, $__context=NULL) {
+		static public function render($tplName, $__context=NULL, $zipBlank=TLEX_ZIP_BLANK) {
 			if (strpos($tplName, '.') === false || strrpos($tplName, '.') > 10)
 				$tplName .= '.' . TLEX_DEFAULT_TEMPLATE_FILE_EXTENSION;
 			
@@ -32,9 +32,15 @@
 			$__filter = new Tlex_ExtendedFilter();
 
 			Tlex_CacheHandler::init();
-			Tlex_CacheHandler::compileTemplate( $tplName );
 
-			require Tlex_CacheHandler::getCacheFilePath( $tplName );
+			if (Tlex_CacheHandler::isCacheUsable($tplName, false) == false) {
+				Tlex_CacheHandler::compileTemplate($tplName, false);
+				$zipBlank = false;
+
+			}else if ($zipBlank)
+				Tlex_CacheHandler::compileTemplate($tplName, true);
+			
+			require Tlex_CacheHandler::getCacheFilePath( $tplName, $zipBlank );
 
 		}
 

@@ -39,14 +39,16 @@
 				
 				ob_clean();
 				
-				
+				$originTplPath = self::getOriginTemplateFilePath($error['file']);
+				$cacheTplPath = $error['file'];
+
 				self::renderErrorPageWithCode(
 					$errorName,
 					$error['message'],
 					$error['line'],
 					4,
-					self::getOriginTemplateFilePath($error['file']),
-					$error['file']
+					$originTplPath,
+					$cacheTplPath
 				);
 
 			}
