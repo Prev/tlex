@@ -64,9 +64,18 @@
 			return TLEX_BASE_PATH . self::CACHE_DIR . '/' .urlencode(($zipped ? 'zipped_' : '') . $relPath . '/' . basename($tplName));
 		}
 
-		static public function isCacheUsable($filename, $zipBlank=false) {
-			$cachePath = self::getCacheFilePath($filename, $zipBlank);
-			return is_file($cachePath) && filemtime($cachePath) > filemtime($filename);
+		static public function isCacheUsable($tplName, $zipBlank=false) {
+			$cachePath = self::getCacheFilePath($tplName, $zipBlank);
+			return is_file($cachePath) && filemtime($cachePath) > filemtime($tplName);
+		}
+
+		static public function deleteCache($tplName) {
+
+			$f1 = self::getCacheFilePath($tplName, false);
+			$f2 = self::getCacheFilePath($tplName, true);
+
+			if (is_file($f1)) @unlink($f1);
+			if (is_file($f2)) @unlink($f2);
 		}
 
 	}

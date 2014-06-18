@@ -51,6 +51,7 @@
 					$cacheTplPath
 				);
 
+				Tlex_CacheHandler::deleteCache($originTplPath);
 			}
 		}
 

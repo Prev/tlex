@@ -1,4 +1,5 @@
-tlex/cache/*
+tlex/cache/*.thtml
+tlex/cache/*.php
 
 #################
 ## Eclipse

@@ -31,16 +31,16 @@
 			$html = preg_replace_callback('/{%([\s\S]+?)%}/', array($className, 'parseCode'), $html);
 
 			// {$foo|filter}
-			$html = preg_replace_callback('/{\s?([^}|]+)((\|[^}|]+)+)\s?}/', array($className, 'parseFilter'), $html);
+			$html = preg_replace_callback('/{(?:@@@)?\s?([^}|]+)((\|[^}|]+)+)\s?}/', array($className, 'parseFilter'), $html);
 
 			// {$foo}
-			$html = preg_replace_callback('/{\s?(\$[^}]+?)\s?}/', array($className, 'parseVar'), $html);
+			$html = preg_replace_callback('/{(?:@@@)?\s?(\$[^}]+?)\s?}/', array($className, 'parseVar'), $html);
 			
 			// {func()}
-			$html = preg_replace_callback("/{\s?([a-zA-Z0-9_]+)\((.*?)\)\s?}/", array($className, 'parseFunc'), $html);
+			$html = preg_replace_callback("/{(?:@@@)?\s?([a-zA-Z0-9_]+)\((.*?)\)\s?}/", array($className, 'parseFunc'), $html);
 			
 			// {@@@$foo}
-			$html = preg_replace_callback('/{\s?@@@(\$[^}]+?)\s?}/', array($className, 'parseVarTrace'), $html);
+			//$html = preg_replace_callback('/{\s?@@@(\$[^}]+?)\s?}/', array($className, 'parseVarTrace'), $html);
 			
 			// {~'example.css'}
 			$html = preg_replace_callback('/{\s?~([^}]+)\s?}/', array(self, 'parseSources'), $html);
@@ -63,13 +63,21 @@
 			return $html;
 		}
 
+		static protected function getVarTraceCode($var, $match) {
+			$varname = substr($match, 4, strlen($match)-5);
+			return '<?php echo Tlex::varTrace('.$var.', \''.$varname.'\'); ?>';
+		}
+
 		static protected function parseVar($matches) {
 			if (substr($matches[1], 0, 7) == '$__context') return '{'.$matches[1].'}';
 
 			$varname = $matches[1];
 			$varname = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__context->$1', $varname, -1);
 
-			return '<?php echo ' . $varname . '; ?>';
+			if (substr($matches[0], 0, 4) == '{@@@')
+				return self::getVarTraceCode($varname, $matches[0]);
+			else
+				return '<?php echo ' . $varname . '; ?>';
 		}
 
 		static protected function parseFilter($matches) {
@@ -103,8 +111,13 @@
 				$f = $filters[$i];
 				$data = self::getFilterCode($data, $f[0], $f[1]);
 			}
-	
-			return '<?php echo ' . $data . '; ?>';
+			
+			if (substr($matches[0], 0, 4) == '{@@@')
+				return self::getVarTraceCode($data, $matches[0]);
+			else if ($matches[0][0] == '{')
+				return '<?php echo ' . $data . '; ?>';
+			else
+				return $data;
 		}
 
 		static private function getFilterCode($data, $filter, $params=NULL) {
@@ -119,10 +132,13 @@
 			$c = $matches[1];
 			$c = preg_replace('/([^:>])\$([\>a-zA-Z0-9_-]*)/', '$1\$__context->$2', $c);
 			$c = preg_replace('/([^:>])\${([\>a-zA-Z0-9_-]*)}/', '$1\${__context->$2}', $c);
+			$c = preg_replace_callback('/(\$[^}|]+)((\|[a-zA-Z0-9_]+)+)/', array(get_class(), 'parseFilter'), $c);
+			$c = str_replace('$__context->__context', '$__context', $c);
 
 			if (substr($c, 0, 1) != ' ') $c = ' ' . $c;
 			if (substr($c, strlen($c)+1, 1) != ' ')	$c .= '';
-				
+
+
 			return '<?php' . $c . '?>';
 		}
 
@@ -134,15 +150,12 @@
 			$args = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__context->$1', $args, -1);
 			$args = preg_replace('/\${([\>a-zA-Z0-9_-]*)}/', '\${__context->$1}', $args, -1);
 
-			return '<?php $func=' . $function.'('.$args.')' . '; if (isset($func)) echo $func; ?>';
-		}
-
-
-		static protected function parseVarTrace($matches) {
-			$varname = $matches[1];
-			$varname = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__context->$1', $varname, -1);
-
-			return '<?php echo Tlex::varTrace('.$varname.', \''.$matches[1].'\'); ?>';
+			if (substr($matches[0], 0, 4) == '{@@@') {
+				$varname = substr($matches[0], 4, strlen($matches[0])-5);
+				return '<?php $func=' . $function.'('.$args.')' . '; if (isset($func)) Tlex::varTrace($func, \''.$varname.'\'); ?>';
+			}
+			else
+				return '<?php $func=' . $function.'('.$args.')' . '; if (isset($func)) echo $func; ?>';
 		}
 
 		static protected function parseSources($matches) {

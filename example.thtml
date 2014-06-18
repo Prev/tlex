@@ -118,6 +118,17 @@
 			{'Check out http://github.com/Prev/tlex'|urlize}<br>
 			{'Check out github.com/Prev/tlex'|urlizetrunc:15}<br>
 			<br>
+
+			{printLicense()|lower}<br>
+			{printLicense(true)|lower}
+		</p>
+
+
+		<h2>Filter in raw code</h2>
+		<p>
+			{% if ($fruits|len > 2) : %}
+				so many fruits!
+			{% endif; %}
 		</p>
 
 
@@ -125,6 +136,8 @@
 		<p>
 			{@@@$foo}
 			{@@@$fruits}
+			{@@@$fruits|first}
+			{@@@printLicense()}
 		</p>
 
 

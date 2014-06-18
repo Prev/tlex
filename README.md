@@ -23,14 +23,14 @@ just excute `Tlex::render($templateFileName, $context)`
 + `{$foo}`					--> print variable
 + `{$foo|trim}`			  	--> print variable with filter(pipe) (like django)
 + `{count($foo)}`		  	--> excute function and print return value
-+ `{@@@$foo}`			    --> trace(var_dump) variable
++ `{@@@$foo}`			    --> trace variable (beautiful var_dump)
 + `{[ en=>'english description', ko=>'korean description' ]}`		--> process multi-language
 + `{~'example.css'}`		-> include css (convert to link tag)
 + `{~'example.js'}`			-> include js (convert to link tag)
 
 
 ## Filters ★
-You can use all of django built-in filters.
+You can use most of django built-in filters.
 
 [view django built-in filter](https://docs.djangoproject.com/en/dev/ref/templates/builtins/#built-in-filter-reference)
 
@@ -83,6 +83,13 @@ It's almost like django template
 		
 		<!-- trace(var_dump) variable -->
 		{@@@$foo}
+		{@@@$fruits|first}
+		{@@@printLicense()}
+
+		<!-- Filter in raw code -->
+		{% if ($fruits|len > 2) : %}
+			so many fruits!
+		{% endif; %}
 
 		<!-- multi-language -->
 		{['en'=>'this is english description', 'ko'=>'한국어 설명']}
