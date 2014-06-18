@@ -44,4 +44,17 @@
 
 		}
 
+		static public function varTrace($var, $varname=NULL) {
+			$bt = debug_backtrace();
+			$path = str_replace("\\", '/', $bt[0]['file']);
+			$line = $bt[0]['line'];
+
+			echo '<x y=""><pre class="tlex-var-trace"><div class="vtrace-first-line">' .
+				(isset($varname) ? "call <b>{$varname}</b> " : '') . 'in ' . $path . ' on line ' . $line .
+			'</div>';
+
+			var_dump($var);
+			echo '</x></pre>';
+		}
+
 	}

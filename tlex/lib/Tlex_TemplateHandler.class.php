@@ -142,7 +142,7 @@
 			$varname = $matches[1];
 			$varname = preg_replace('/\$([\>a-zA-Z0-9_-]*)/', '\$__context->$1', $varname, -1);
 
-			return '<?php echo \'<x y=""><pre class="tlex-var-trace">\'; var_dump('.$varname.'); echo \'</x></pre>\' ?>';
+			return '<?php echo Tlex::varTrace('.$varname.', \''.$matches[1].'\'); ?>';
 		}
 
 		static protected function parseSources($matches) {

@@ -12,7 +12,6 @@
 
 		<h2>Print variable</h2>
 		<p>
-			#{$foo}
 			{$foo}
 		</p>
 		
@@ -122,9 +121,10 @@
 		</p>
 
 
-		<h2>Trace(var_dump) variable</h2>
+		<h2>Trace variable (beautiful var_dump)</h2>
 		<p>
 			{@@@$foo}
+			{@@@$fruits}
 		</p>
 
 

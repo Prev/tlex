@@ -9,7 +9,7 @@ pre.tlex-var-trace{
 	font-family: Consolas, "Liberation Mono", Courier, monospace;
 	color:#333;
 }
-pre.tlex-var-trace .vtrace-first-line{ color:#999 }
+pre.tlex-var-trace .vtrace-first-line{ color: #999; font-style: italic; }
 pre.tlex-var-trace .vtrace-string{ color:#d14 }
 pre.tlex-var-trace .vtrace-keyword{ color:#008080 }
 pre.tlex-var-trace .vtrace-light{ color:#39C }
