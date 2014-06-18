@@ -270,7 +270,7 @@
 			for ($i=0; $i<$fn-$bn; $i++)
 				$pathPrefix .= '../';
 
-			return self::$pathPrefix = $rpathPrefixelPath;
+			return self::$pathPrefix = $pathPrefix;
 		}
 
 	}
