@@ -1,6 +1,8 @@
 # What is Tlex
 Tlex is simple and powerful php template excuter.
 
+-> [view tlex template and excuted output](https://lab.prev.kr/opensources/tlex/)
+
 
 ## How to use
 just excute `Tlex::render($templateFileName, $context)`
