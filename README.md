@@ -49,7 +49,7 @@ It's almost like django template
 		<title>tlex example</title>
 
 		{~debugset} <!-- When trace variable (@@@$var), it looks more beautiful -->
-		{~'example.css'}
+		{~'example.css'} <!-- include example.css (convert to link tag) -->
 	</head>
 	<body>
 		<!-- print variable -->
@@ -80,7 +80,7 @@ It's almost like django template
 		<ul>
 		{% foreach ($fruits as $key => $item) : %}
 			<li>{$item}</li>
-			{% endforeach; %}
+		{% endforeach; %}
 		</ul>
 		
 		<!-- trace(var_dump) variable -->
