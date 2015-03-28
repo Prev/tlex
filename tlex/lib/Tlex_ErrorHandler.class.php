@@ -62,7 +62,7 @@
 			$context->errorMessage = $message;
 			$context->contentMessage = $contentMessage;
 
-			Tlex::render(TLEX_BASE_PATH . '/common/error_page', $context);
+			Tlex::render(TLEX_BASE_PATH . '/common/error_page.thtml', $context);
 		}
 
 		
@@ -79,13 +79,13 @@
 				$context->cachedTplName = $cachedTplName;
 				$context->errorLines_cached = self::getLinesByRange( $context->cachedTplName, $line, $range );
 			}
-			Tlex::render(TLEX_BASE_PATH . '/common/error_page_with_code', $context);
+			Tlex::render(TLEX_BASE_PATH . '/common/error_page_with_code.thtml', $context);
 		}
 
 
 		public static function getOriginTemplateFilePath($cacheFilePath) {
 			$pos = strrpos($cacheFilePath, DIRECTORY_SEPARATOR);
-			return urldecode(substr($cacheFilePath, $pos+1));
+			return urldecode(urldecode(substr($cacheFilePath, $pos+1)));
 		}
 
 		private static function getLinesByRange($filePath, $offset, $range) {

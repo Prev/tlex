@@ -23,6 +23,7 @@ html,body{
 #header h3{ margin-left: 3px; font-size: 17px }
 
 div.file-name{ padding: 15px 35px; }
+div.file-name .path{ color: #D24E1E; }
 
 .code-wrap{ position: relative; }
 

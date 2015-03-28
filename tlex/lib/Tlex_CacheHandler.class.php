@@ -61,7 +61,12 @@
 			$offset = strrpos($relPath, '/');
 			$relPath = substr($relPath, 0, $offset);
 
-			return TLEX_BASE_PATH . self::CACHE_DIR . '/' .urlencode(($zipped ? 'zipped_' : '') . $relPath . '/' . basename($tplName));
+			if (strpos($tplName, TLEX_BASE_PATH) === 0)
+				$baseTplName = '__tlex__' . basename($tplName);
+			else
+				$baseTplName = urlencode($tplName);
+
+			return TLEX_BASE_PATH . self::CACHE_DIR . '/' .urlencode(($zipped ? 'zipped_' : '') . $relPath . '/' . $baseTplName);
 		}
 
 		static public function isCacheUsable($tplName, $zipBlank=false) {

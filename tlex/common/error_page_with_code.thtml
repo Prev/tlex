@@ -14,7 +14,7 @@
 		</div>
 		<div id="content">
 			<div class="file-name">
-				Error in "{$originTplName}" on line {$errorLineNum}
+				Error in <span class="path">"{$originTplName}"</span> on line {$errorLineNum}
 			</div>
 
 			<div class="code-wrap clearfix">
@@ -32,7 +32,7 @@
 
 			{% if ($cachedTplName) : %}
 			<div class="file-name" style="margin-top:20px">
-				Rendered cache file version ("{$cachedTplName}") :
+				Rendered cache file version (<span class="path">"{$cachedTplName}"</span>) :
 			</div>
 			<div class="code-wrap clearfix">
 				<ol class="linenum">
